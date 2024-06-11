@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Host info</title>
+</head>
+<body style="background-color:yellowgreen;">
+        <h2>{{ node_name }} {{ date_now }}</h2>
+	<h2></h2>
+	<p>{{ rezultatI }}</p>
+	<h2></h2>
+	<h2>Last 10 rows from database</h2>
+	<h2></h2>
+	<table>
+		{% for row in polje %}
+		<tr>
+			{% for cell in row %}
+			<td>{{ cell }}</td>
+			{% endfor %}
+		</tr>
+		{% endfor %}
+	</table>
+	<h2></h2>
+	<p>{{ rezultatS }}</p>
+	<h2></h2>
+</body>
+</html>

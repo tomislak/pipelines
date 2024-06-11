@@ -1,0 +1,37 @@
+pipeline {
+    agent {
+        label 'slaveMachine'
+    }
+    stages {
+        stage('Clone Repo') {
+            steps {
+                echo 'Cloning repo!'
+                git url: 'git@gitlabserver:ghostdate/phostdate.git', branch: 'main', credentialsId: '58......e1'
+            }
+        }
+        stage('Build and Push Image') {
+            steps {
+                echo 'Building and pushing image!'
+                script {
+                    def mojImage = docker.build("flask-docker:202305041", "./flask")
+                    docker.withRegistry('http://nexusrepo:9001/repository/dockerrepo/', 'ffd.....f1') {
+                        mojImage.push()
+                        mojImage.push("latest")
+                    }
+                }
+            }
+        }
+        stage('Deploy Flask Yaml') {
+            steps {
+                echo 'Applaying falsk yaml'
+                sh 'kubectl -f ./kubernetes/flask.yaml apply'
+            }
+        }
+        stage('Deploy Postgres Yaml') {
+            steps {
+                echo 'Applaying postgres yaml'
+                sh 'kubectl -f ./kubernetes/postgres.yaml apply'
+            }
+        }
+    }
+}
